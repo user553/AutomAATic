@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Thank you for completing a review!</h1>
+    <a href="{{ url_for('assessment_bp.completed_assessments') }}">Return to Completed Assessments</a>
+{% endblock %}

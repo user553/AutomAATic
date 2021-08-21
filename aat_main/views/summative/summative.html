@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>Summative Assessments</h2>
+
+    <a class="btn btn-success" href="{{ url_for('summative_blueprint.summative_create') }}">Create New Assessment</a><br>
+
+    <div id="question_table_div" value="Please Enter a Title">
+        <table id="question_table" class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Module</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Edit/Delete</th>
+                <th scope="col">Satisfaction review results</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for assessment in assessments %}
+                {% if assessment.type == 1 %}
+                    <tr id="{{ assessment.id }}" class="summative_assessments_table">
+                        <th scope="row">{{ assessment.module }}</th>
+                        <td>{{ assessment.title }}</td>
+                        <td>{{ assessment.description }}</td>
+                        <td>
+                            <a class="btn btn-primary" href="{{ url_for('summative_blueprint.summative_edit', assessment_id = assessment.id) }}">EDIT</a> / <a
+                                class="btn btn-danger"
+                                href="{{ url_for('summative_blueprint.summative_delete_action', assessment_id  = assessment.id, action='delete') }}">DELETE</a>
+                        </td>
+                        <td>
+                            <a href="{{ url_for('satisfaction_result_bp.assessment_review_results', id=assessment.id) }}" class="btn btn-secondary">
+                                View
+                            </a>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

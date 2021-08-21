@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <h1 class="review-results-page-title">{{ page_title }}</h1>
+
+    {% include '_review-statements-results.html' %}
+
+    {% include '_review-statements-summary.html' %}
+
+    <hr>
+
+    {% include '_comments-section.html' %}
+{% endblock %}

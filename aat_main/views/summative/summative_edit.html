@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h2>
+        Edit Assessment
+    </h2>
+    <form action="" method="post" , id=summative_form>
+        {{ form.csrf_token() }}
+        <input name="title_form" type="text" class="form-control" maxlength="64" value="{{ assessment.title }}" , id="title_form"><br>
+        <div><span id="titleLengthLabel">0</span>/64</div>
+
+
+        <!-- Question check boxes -->
+        <table class="table table-bordered table-hover">
+            <thead>
+            <tr>
+                <th scope="col">Module</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Add Question?</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for question in questions %}
+                {% if question.module_code == assessment.module %}
+                    {% if question.id|string in added_questions %}
+                        <tr>
+                            <th scope="row">{{ question.module_code }}</th>
+                            <td>{{ question.name }}</td>
+                            <td>{{ question.description }}</td>
+                            <td>
+                                <input type="checkbox" id="{{ question.id }}" name="{{ question.id }}" value="{{ question.id }}" checked>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <th scope="row">{{ question.module_code }}</th>
+                            <td>{{ question.name }}</td>
+                            <td>{{ question.description }}</td>
+                            <td>
+                                <input type="checkbox" id="{{ question.id }}" name="{{ question.id }}" value="{{ question.id }}">
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            </tbody>
+        </table>
+        <div id="datetime">
+            <!-- Date/time selections -->
+            <div id="date_form">
+                <input name="start_date" type="date" class="input-group date" value="{{ startdate }}">
+            </div>
+            <div id="time_form">
+                <input name="start_time" type="time" class="form-control timepicker" value="{{ starttime }}">
+            </div>
+            <br>
+            <div id="date_form">
+                <input name="end_date" type="date" class="input-group date" value="{{ enddate }}">
+            </div>
+            <div id="time_form">
+                <input name="end_time" type="time" class="form-control timepicker" value="{{ endtime }}">
+            </div>
+
+        </div>
+        <br>
+
+        <div class="input-group">
+            <span class="input-group-text" id="basic-addon3">Minutes</span>
+            <input name="timelimit_form" type="number" class="form-control" , min=0, max=300, value="{{ assessment.timelimit }}">
+        </div>
+
+        <br><input name="description_form" type="text" class="form-control" maxlength="512" value="{{ assessment.description }}" id="description_form"><br>
+        <div><span id="descLengthLabel">0</span>/512</div>
+
+
+        {{ form.submit(class="btn btn-secondary") }}
+    </form>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const maxTitleLength = 64;
+        const minTitleLength = 5;
+        const maxDescLength = 512
+        const titleLengthLabel = document.getElementById("titleLengthLabel");
+        const descLengthLabel = document.getElementById("descLengthLabel")
+        const submitButton = document.getElementById("submit")
+
+        document.getElementById("title_form").addEventListener('input', function () {
+            titleLength = this.value.length;
+            titleLengthLabel.innerHTML = titleLength;
+
+            if (titleLength > maxTitleLength) {
+                this.setCustomValidity('Title to long')
+            } else if (titleLength < minTitleLength) {
+                this.setCustomValidity('Title to short')
+            } else {
+                this.setCustomValidity('')
+            }
+
+            submitButton.disabled = !this.checkValidity();
+        })
+
+        document.getElementById("description_form").addEventListener('input', function () {
+            descLength = this.value.length;
+            descLengthLabel.innerHTML = descLength;
+
+            if (titleLength > maxDescLength) {
+                this.setCustomValidity("Description to long")
+            } else {
+                this.setCustomValidity('')
+            }
+
+            submitButton.disabled = !this.checkValidity();
+        })
+
+        document.addEventListener("submit", function () {
+            alert("Assessment created!")
+        })
+
+    </script>
+{% endblock %}

@@ -1,0 +1,9 @@
+<div class="comments-box">
+    <h2 style="text-align:center;">Comments</h2>
+    <ul class="list-group">
+        {% for comment in comments %}
+            <li class="list-group-item review-comment">{{ comment }}</li>
+        {% endfor %}
+    </ul>
+</div>
+

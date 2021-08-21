@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>There are currently no reviews for the question:</h1>
+    <p style="font-size: 2em;font-weight: bold">{{ question.description }}</p>
+    <a href="{{ url_for('question_bp.manage_questions') }}">Return to questions</a>
+{% endblock %}

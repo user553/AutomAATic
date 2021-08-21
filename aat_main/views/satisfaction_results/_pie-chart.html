@@ -1,0 +1,30 @@
+<script type="text/javascript">
+    google.charts.load("current", {packages: ["corechart"]});
+    google.charts.setOnLoadCallback(drawChart);
+
+    // reference for knowing how to use jinja inside script tag. 22 March
+    //  https://blog.ruanbekker.com/blog/2017/12/14/graphing-pretty-charts-with-python-flask-and-chartjs/
+    function drawChart() {
+        const data = google.visualization.arrayToDataTable([
+            ['Response', 'Frequency'],
+            //reference 23 March. https://stackoverflow.com/questions/25373154/how-to-iterate-through-a-list-of-dictionaries-in-jinja-template
+            {% for response, count in response_counts_dict.items() %}
+                ['{{ response }}', {{ count }}],
+            {% endfor %}
+        ]);
+        const options = {
+            title: '{{ chart_title }}',
+            pieHole: 0.4,
+        };
+
+        const chart = new google.visualization.PieChart(document.getElementById('{{ chart_container }}'));
+
+        /*
+        google.visualization.events.addListener(chart, 'ready', function () {
+            document.getElementById('print').outerHTML = '<a href="' + chart.getImageURI() + '">Printable version</a>';
+        });
+         */
+
+        chart.draw(data, options);
+    }
+</script>

@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <p class="display-4">Engagement Of {{ course }}</p>
+        </div>
+        <div class="col-2">
+            <a href="{{ url_for('account_bp.account_page') }}" class="btn btn-primary" style="float: right; margin: 0 auto;">Back</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-5">
+            <div>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg">
+                        <p class="lead font-italic">Total Credit</p>
+                        <p class="display-4 font-italic">{{ current_account.credit }}</p>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg">
+                        <p class="lead font-italic">Module Credit</p>
+                        <p class="display-4 font-italic" id="moduleCredit">0</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg">
+                        <p>Formative Credit</p>
+                        <h3 id="formativeCredit">0</h3>
+                        <p>Summative Credit</p>
+                        <h3 id="summativeCredit">0</h3>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg">
+                        <p>Feedback Credit</p>
+                        <h3 id="feedbackCredit">0</h3>
+                        <p>Collection Credit</p>
+                        <h3 id="collectionCredit">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-7">
+            <div id="engagementPieChart" style="width: 100%; height: 400px;"></div>
+        </div>
+    </div>
+    <div class="row">
+        <p class="lead font-italic font-weight-bold">Credit Events Table</p>
+        <table id="creditEvent"></table>
+    </div>
+    <hr>
+    <div class="row">
+        <p class="lead font-italic font-weight-bold">Collection Table</p>
+        <table id="collection"></table>
+    </div>
+</div>

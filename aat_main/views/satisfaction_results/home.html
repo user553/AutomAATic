@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    include average of reviews across all assessments
+    <h2 style="text-align: center">View satisfaction review results for...</h2>
+    {% include "_result-option-link.html" %}
+
+    {#    {% for option, link in [('automAATiq', 'aat_review_results' %}#}
+    <details class="container-with-shadow result-home-page-option">
+        <summary>Assessment</summary>
+        {% for assessment in assessments %}
+            <a href="#" class="list-group-item list-group-item-action">{{ assessment.title }}</a>
+        {% endfor %}
+    </details>
+    {#    <div class="container-with-shadow result-home-page-option">#}
+    {#        #}
+    {#    </div>#}
+    <details class="container-with-shadow result-home-page-option">
+        <summary>Question</summary>
+        {% for question in questions %}
+            <a href="#" class="list-group-item list-group-item-action">{{ assessment.title }}</a>
+        {% endfor %}
+    </details>
+
+    <div class="container-with-shadow result-home-page-option">
+        Question
+    </div>
+
+{% endblock %}

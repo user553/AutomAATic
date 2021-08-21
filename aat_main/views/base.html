@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Basic -->
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+
+    <!-- Mobile Metas -->
+    <meta content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no"
+          name="viewport">
+
+    <!-- Site Metas -->
+    <title>AAT</title>
+
+    <!-- Site Icons -->
+    <link href="/images/icons/favicon.ico" rel="shortcut icon" type="image/x-icon">
+
+    <!-- Import CSS -->
+    <link href="/css/import_css/bootstrap.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/import_css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="/css/import_css/normalize.css" rel="stylesheet" type="text/css">
+    {% block heads %}
+    {% endblock %}
+
+    <!-- Site CSS -->
+    <link href="/css/custom_css/style.css" rel="stylesheet" type="text/css">
+    {#        <script src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js'></script>#}
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400&display=swap"
+          rel="stylesheet">
+
+</head>
+
+<body>
+<header>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img class="img-fluid" src="/images/icons/favicon.ico" width="50px" height="50px"
+                     alt=""/>
+            </a>
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                    data-target="#navbarResponsive" aria-controls="navbarResponsive"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                Menu
+                <i class="fa fa-bars" aria-hidden="true"></i>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav text-uppercase ml-auto">
+                    {% if current_user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">
+                                Home
+                            </a>
+                        </li>
+                        {#                        <li class="nav-item">#}
+                        {#                            <a class="nav-link" href="/course/">#}
+                        {#                                Course#}
+                        {#                            </a>#}
+                        {#                        </li>#}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('assessment_bp.assessments') }}">
+                                Assessments
+                            </a>
+                        </li>
+                        {% if current_user.role == 'lecturer' %}
+                            <li class="nav-item">
+                                <a class="nav-link"
+                                   href="{{ url_for('question_bp.manage_questions') }}">
+                                    Questions
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('account_bp.account_page') }}">
+                                Account
+                            </a>
+                        </li>
+                        {#                        {% if current_user.role=='lecturer' %}#}
+                        {#                            <li class="nav-item">#}
+                        {#                                <a class="nav-link"#}
+                        {#                                   href="{{ url_for('satisfaction_result_bp.home') }}">#}
+                        {#                                    Satisfaction Review Results#}
+                        {#                                </a>#}
+                        {#                            </li>#}
+                        {#                        {% endif %}#}
+                        <li class="nav-item">
+                            <span style="margin:0 1vw" class="navbar-text">
+                                Logged in as <span
+                                    style="font-weight:bold;">{{ current_user.name }}</span>
+                            </span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth_bp.logout') }}">
+                                Logout
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('auth_bp.login') }}">
+                                Login
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</main>
+
+{% if current_user.is_authenticated %}
+    <div style="height:50px;"></div>
+    <footer>
+        {% if current_user.role == 'student' %}
+            <div class="text-center">
+                <a class="footer-link-text" href="{{ url_for('satisfaction_review_bp.aat_review') }}">Review automAATiq</a>
+            </div>
+        {% elif current_user.role == 'lecturer' %}
+            {#                <a href="{{ url_for('satisfaction_result_bp.aat_review_results') }}"#}
+            {#                   class="footer-link-text">#}
+            {#                    See what students think about automAATiq#}
+            {#                </a>#}
+            <div class="text-center">
+                -
+            </div>
+        {% endif %}
+    </footer>
+{% endif %}
+
+
+<!-- JS -->
+<script type="text/javascript" src="/js/import_js/jquery-3.5.1.min.js"></script>
+<script type="text/javascript" src="/js/import_js/bootstrap.bundle.min.js"></script>
+{% block scripts %}
+{% endblock %}
+</body>
+</html>

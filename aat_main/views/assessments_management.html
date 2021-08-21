@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>
+        Assessments Management
+    </h1>
+    <p><a href="{{ url_for('formative_blueprint.formative') }}">Formative</a></p>
+    <p><a href="{{ url_for('summative_blueprint.summative') }}">Summative</a></p>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

@@ -1,0 +1,7 @@
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <span style="color:#d53535;font-size:2em;font-style:italic">{{ message }}</span><br>
+        {% endfor %}
+    {% endif %}
+{% endwith %}

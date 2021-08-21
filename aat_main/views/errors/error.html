@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    <section style="color: red">
+        <h1>{{ api_exception.code }}</h1>
+        <h1>{{ api_exception.message }}</h1>
+        <h1>Redirect homepage after 3 seconds</h1>
+    </section>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <!--commented this out for now because it was messing with debugging a 404 error-->
+    <script type="text/javascript" src="/js/error.js"></script>
+{% endblock %}

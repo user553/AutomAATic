@@ -1,0 +1,468 @@
+{% extends 'base.html' %}
+{% block heads %}
+    <link rel="stylesheet" href="/css/import_css/bootstrap-table.min.css">
+{% endblock %}
+
+{% block content %}
+    <h1>Question Management</h1>
+
+    <div class="row" style="margin: 0;">
+        <select id="moduleDropdown" class="form-control col-3" style="margin-right: 10px;">
+            <option>All</option>
+            {% for m in modules %}
+                <option>{{ m.code }}</option>
+            {% endfor %}
+        </select>
+        {#            <select id="sortDropdown" class="form-control col-3" style="margin-right: 10px;">#}
+        {#                <option>Sort by id</option>#}
+        {#                <option>Sort by time asc</option>#}
+        {#                <option>Sort by time desc</option>#}
+        {#                <option>Sort by module</option>#}
+        {#            </select>#}
+        <!-- Button trigger modal -->
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#questionDetail"
+                onclick="initQuestionDetail()" style="margin-right: 10px;">
+            Create Question
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="questionDetail" data-backdrop="static" data-keyboard="false" tabindex="-1"
+             aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Question Detail</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div style="display: none" id="hiddenId"></div>
+                        <form>
+                            <div class="row">
+                                <div class="form-group col">
+                                    <label for="moduleDetail">Module</label>
+                                    <select id="moduleDetail" class="form-control">
+                                        {% for m in modules %}
+                                            <option>{{ m.code }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-group col">
+                                    <label for="typeDetail">Type</label>
+                                    <select id="typeDetail" class="form-control">
+                                        <option value="0">Multiple choice</option>
+                                        <option value="1">Fill in blank</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="questionNameDetail">Question Name</label>
+                                <input type="text" class="form-control" id="questionNameDetail"
+                                       placeholder="Question Name Detail">
+                                <h4 id="questionNameDetailVerification"></h4>
+                            </div>
+                            <div class="form-group">
+                                <label for="questionDescriptionDetail">Question Description</label>
+                                <textarea type="text" class="form-control" id="questionDescriptionDetail"
+                                          placeholder="Question Description Detail"></textarea>
+                                <h4 id="questionDescriptionDetailVerification"></h4>
+                            </div>
+                            <div class="form-group">
+                                <label for="questionFeedback">Question Feedback</label>
+                                <textarea type="text" class="form-control" id="questionFeedback"
+                                          placeholder="Question Feedback"></textarea>
+                                <h4 id="questionFeedbackVerification"></h4>
+                            </div>
+                            <div class="form-group" id="optionDetailGroup">
+                                <label for="optionDetail">Question Options</label>
+                                <div class="row">
+                                    <div class="col" id="optionGroup">
+                                    </div>
+                                    <div class="col" id="addOptionGroup">
+                                        <button type="button" class="btn btn-primary inline-block"
+                                                onclick="addQuestionOption(this)" id="addQuestionBtn">Add Option
+                                        </button>
+                                        <button type="button" class="btn btn-danger inline-block"
+                                                onclick="deleteQuestionOption()" id="deleteQuestionBtn">Delete Option
+                                        </button>
+                                        <button type="button" class="btn btn-success inline-block"
+                                                onclick="createQuestionOption(this)" style="display: none;"
+                                                id="createOptionBtn">Create Option
+                                        </button>
+                                        <input type="text" class="form-control" placeholder="" id="optionInput"
+                                               style="display: none;">
+                                        <h4 id="optionInputVerification"></h4>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group" id="questionAnswerDetailGroup" style="display: none">
+                                <label for="questionAnswerDetail">Answer</label>
+                                <input type="text" class="form-control" id="questionAnswerDetail" placeholder="Answer">
+                                <h4 id="questionAnswerDetailVerification"></h4>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal" id="createBtn"
+                                onclick="createQuestion()">
+                            Create
+                        </button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal" id="updateBtn"
+                                onclick="updateQuestion()">
+                            Update
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="button" class="btn btn-danger" style="margin-right: 10px;" onclick="deleteQuestion()">Delete
+            question
+        </button>
+    </div>
+    <table id="btTable" data-toggle="table"></table>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="/js/import_js/bootstrap-table.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#questionNameDetail").bind('input propertychange', monitorAccountInput);
+            $("#questionDescriptionDetail").bind('input propertychange', monitorAccountInput);
+            $("#questionFeedback").bind('input propertychange', monitorAccountInput);
+            $("#optionInput").bind('input propertychange', monitorAccountInput);
+            $("#questionAnswerDetail").bind('input propertychange', monitorAccountInput);
+        })
+
+        function monitorAccountInput() {
+            if ($.trim($("#questionNameDetail").val()).length == 0) {
+                $("#questionNameDetail").attr("class", "form-control is-invalid");
+                $("#questionNameDetailVerification").attr("class", "invalid-feedback");
+                $("#questionNameDetailVerification").html("Invalid name");
+            } else {
+                $("#questionNameDetail").attr("class", "form-control is-valid");
+                $("#questionNameDetailVerification").attr("class", "valid-feedback");
+                $("#questionNameDetailVerification").html("Valid name");
+            }
+
+            if ($.trim($("#questionDescriptionDetail").val()).length == 0) {
+                $("#questionDescriptionDetail").attr("class", "form-control is-invalid");
+                $("#questionDescriptionDetailVerification").attr("class", "invalid-feedback");
+                $("#questionDescriptionDetailVerification").html("Invalid description");
+            } else {
+                $("#questionDescriptionDetail").attr("class", "form-control is-valid");
+                $("#questionDescriptionDetailVerification").attr("class", "valid-feedback");
+                $("#questionDescriptionDetailVerification").html("Valid description");
+            }
+
+            if ($.trim($("#questionFeedback").val()).length == 0) {
+                $("#questionFeedback").attr("class", "form-control is-invalid");
+                $("#questionFeedbackVerification").attr("class", "invalid-feedback");
+                $("#questionFeedbackVerification").html("Invalid feedback");
+            } else {
+                $("#questionFeedback").attr("class", "form-control is-valid");
+                $("#questionFeedbackVerification").attr("class", "valid-feedback");
+                $("#questionFeedbackVerification").html("Valid feedback");
+            }
+
+            if ($.trim($("#optionInput").val()).length == 0) {
+                $("#optionInput").attr("class", "form-control is-invalid");
+                $("#optionInputVerification").attr("class", "invalid-feedback");
+                $("#optionInputVerification").html("Invalid option");
+            } else {
+                $("#optionInput").attr("class", "form-control is-valid");
+                $("#optionInputVerification").attr("class", "valid-feedback");
+                $("#optionInputVerification").html("Valid option");
+            }
+
+            if ($.trim($("#questionAnswerDetail").val()).length == 0) {
+                $("#questionAnswerDetail").attr("class", "form-control is-invalid");
+                $("#questionAnswerDetailVerification").attr("class", "invalid-feedback");
+                $("#questionAnswerDetailVerification").html("Invalid answer");
+            } else {
+                $("#questionAnswerDetail").attr("class", "form-control is-valid");
+                $("#questionAnswerDetailVerification").attr("class", "valid-feedback");
+                $("#questionAnswerDetailVerification").html("Valid answer");
+            }
+        }
+
+        $('#btTable').bootstrapTable({
+            url: '/question/management/data/All',  // 请求数据源的路由
+            dataType: "json",
+            pagination: true, //前端处理分页
+            singleSelect: false,//是否只能单选
+            search: true, //显示搜索框，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+            {#toolbar: '#toolbar-' + courseid, //工具按钮用哪个容器#}
+            striped: true, //是否显示行间隔色
+            cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pageNumber: 1, //初始化加载第10页，默认第一页
+            pageSize: 10, //每页的记录行数（*）
+            pageList: [10, 20, 50, 100], //可供选择的每页的行数（*）
+            strictSearch: true,//设置为 true启用 全匹配搜索，false为模糊搜索
+            // showColumns: true, //显示内容列下拉框
+            // showRefresh: true, //显示刷新按钮
+            minimumCountColumns: 2, //当列数小于此值时，将隐藏内容列下拉框
+            // clickToSelect: true, //设置true， 将在点击某行时，自动勾选rediobox 和 checkbox
+            // height: 500, //表格高度，如果没有设置height属性，表格自动根据记录条数决定表格高度
+            uniqueId: "id", //每一行的唯一标识，一般为主键列
+            showToggle: true, //是否显示详细视图和列表视图的切换按钮
+            // cardView: true, //是否显示详细视图
+            // detailView: true, //是否显示父子表，设置为 true 可以显示详细页面模式,在每行最前边显示+号#}
+            sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
+            columns: [
+                {
+                    title: "selectAll",
+                    field: "select",
+                    checkbox: true,
+                    align: "center",
+                    cellStyle: function () {
+                        $(".th-inner")[0].style.overflow = "inherit";
+                        return {css: {"overflow": "inherit"}}
+                    }
+                }, {
+                    field: 'id',
+                    title: 'Id'
+                }, {
+                    field: 'module',
+                    title: 'Module'
+                }, {
+                    field: 'question',
+                    title: 'Question'
+                }, {
+                    field: 'description',
+                    title: 'Description'
+                }, {
+                    field: 'type',
+                    title: 'Type'
+                }, {
+                    field: 'option',
+                    title: 'Option',
+                    formatter: function (value, row, index) {
+                        return value.split("|").join(" ");
+                    }
+                }, {
+                    field: 'answer',
+                    title: 'Answer'
+                }, {
+                    field: 'release_time',
+                    title: 'Release Time'
+                }, {
+                    field: 'operation',
+                    title: 'Operation',
+                    formatter: function (value, row, index) {
+                        return '<button class="btn btn-outline-primary" data-toggle="modal" data-target="#questionDetail" onclick="editQuestion(' + row.id + ')">edit</button>'
+                    }
+                }, {
+                    field: 'review',
+                    title: 'Review',
+                    formatter: function (value, row, index) {
+                        let reviewUrl = "{{ url_for('satisfaction_result_bp.question_review_result',id='questionId' ) }}".replace('questionId', row.id);
+                        return '<a class="btn btn-outline-primary" href="' + reviewUrl + '">review</a>'
+                    }
+                }]
+        });
+
+        $("#moduleDropdown").on("change", function () {
+            let questionDataUrl = "{{ url_for('question_bp.question_data',module='All' ) }}".replace("All", this.value);
+            $("#btTable").bootstrapTable('refresh', {url: questionDataUrl});
+        });
+
+        $("#typeDetail").on("change", function () {
+            if ($("#typeDetail").get(0).selectedIndex == 0) {
+                $("#questionAnswerDetailGroup")[0].style.display = 'none';
+                $("#optionDetailGroup")[0].style.display = 'block';
+            } else {
+                $("#questionAnswerDetailGroup")[0].style.display = 'block';
+                $("#optionDetailGroup")[0].style.display = 'none';
+            }
+        });
+
+        function initQuestionDetail() {
+            $("#moduleDetail").val("0");
+            $("#typeDetail").val("0");
+
+            $("#questionNameDetail").val("");
+            $("#questionDescriptionDetail").val("");
+            $("#questionFeedback").val("");
+            $('#optionGroup').html("");
+            $("#questionAnswerDetail").val("");
+
+            $("#createBtn")[0].style.display = "block";
+            $("#updateBtn")[0].style.display = "none";
+        }
+
+        function createQuestion() {
+            if ($("#questionNameDetailVerification").attr("class") != "invalid-feedback" && $("#questionDescriptionDetailVerification").attr("class") != "invalid-feedback"
+                && $("#questionFeedbackVerification").attr("class") != "invalid-feedback") {
+                let param = "";
+                param += 'module_code=' + $("#moduleDetail").val();
+                param += '&name=' + $("#questionNameDetail").val();
+                param += '&type=' + $("#typeDetail").get(0).selectedIndex;
+                param += '&description=' + $("#questionDescriptionDetail").val();
+                param += '&feedback=' + $("#questionFeedback").val();
+                let optionStr = "";
+                let answer = "";
+                if ($("#typeDetail").get(0).selectedIndex == 0 && $("#optionInputVerification").attr("class") != "invalid-feedback") {
+                    let options = $("#optionGroup")[0].children
+                    for (let i = 0; i < options.length; i++) {
+                        optionStr += '{' + options[i].children[0].id + ':' + options[i].children[0].value + '}';
+                    }
+
+                    if ($("input[name='optionDetail']:checked")[0] != undefined) {
+                        answer = $("input[name='optionDetail']:checked")[0].value;
+                    } else {
+                        alert("Invalid option");
+                        return;
+                    }
+
+                } else if ($("#questionAnswerDetailVerification").attr("class") != "invalid-feedback") {
+                    answer = $("#questionAnswerDetail").val();
+                }
+                param += '&option=' + optionStr;
+                param += '&answer=' + answer;
+
+                $.post('{{ url_for('question_bp.create_question') }}', param, function (data) {
+                    if (!jQuery.isEmptyObject(data)) {
+                        alert(data);
+                        $('#btTable').bootstrapTable('refresh');
+                    }
+                })
+            } else {
+                alert("Invalid question");
+            }
+        }
+
+        function addQuestionOption(e) {
+            let optionCount = $("#optionGroup")[0].children.length + 1;
+            $('#optionInput')[0].style.display = 'block';
+            $('#optionInput').attr('placeholder', 'Option' + optionCount);
+            $('#optionInput').val('');
+            e.disabled = true;
+            $('#createOptionBtn')[0].style.display = 'block';
+        }
+
+        function deleteQuestionOption(e) {
+            if ($("input[name='optionDetail']:checked")[0] != undefined) {
+                $("input[name='optionDetail']:checked").parent().remove();
+            }
+        }
+
+        function createQuestionOption(e) {
+            let optionCount = $("#optionGroup")[0].children.length + 1;
+            $('#optionGroup').append('<div class="form-check">\n' +
+                '<input class="form-check-input" type="radio" name="optionDetail" id="optionDetail' + optionCount + '" value="' + $('#optionInput').val() + '">\n' +
+                '<label class="form-check-label" for="optionDetail' + optionCount + '">' + $('#optionInput').val() + '</label>\n' +
+                '</div>')
+            e.style.display = 'none';
+            $('#optionInput')[0].style.display = 'none';
+            $('#addQuestionBtn')[0].disabled = false;
+        }
+
+        function editQuestion(id) {
+            initQuestionDetail();
+            $.get('{{ url_for('question_bp.edit_question',id='id') }}'.replace("id", id), "", function (data) {
+                if (!jQuery.isEmptyObject(data)) {
+                    let modules = $("#moduleDetail")[0].children;
+                    modules.forEach(function (module) {
+                        if (module.text == data[0]['module_code']) {
+                            module.selected = 'selected';
+                            $(modules).trigger("change");
+                        }
+                    });
+                    let types = $("#typeDetail")[0].children;
+                    types.forEach(function (type) {
+                        if (type.index == data[0]['type']) {
+                            type.selected = 'selected';
+                            $(types).trigger("change");
+                        }
+                    });
+
+                    $("#questionNameDetail").val(data[0]['name']);
+                    $("#questionDescriptionDetail").val(data[0]['description']);
+                    $("#questionFeedback").val(data[0]['feedback']);
+
+                    data[0]['option'].split("}{").forEach(function (option) {
+                        option = option.replace("{", "").replace("}", "");
+                        $('#optionGroup').append('<div class="form-check">\n' +
+                            '<input class="form-check-input" type="radio" name="optionDetail" id="' + option.split(":")[0] + '" value="' + option.split(":")[1] + '">\n' +
+                            '<label class="form-check-label" for="' + option.split(":")[0] + '">' + option.split(":")[1] + '</label>\n' +
+                            '</div>')
+                    });
+
+                    $("#questionAnswerDetail").val(data[0]['answer']);
+
+                    let options = $("#optionGroup")[0].children
+                    for (let i = 0; i < options.length; i++) {
+                        if (options[i].children[0].value == data[0]['answer']) {
+                            options[i].children[0].checked = true;
+                        }
+                    }
+
+                    $("#createBtn")[0].style.display = "None";
+                    $("#updateBtn")[0].style.display = "block";
+                    $("#hiddenId").text(id);
+                }
+            })
+        }
+
+        function deleteQuestion() {
+            let datas = $('#btTable').bootstrapTable('getSelections');
+            let param = "";
+            datas.forEach(function (item) {
+                param += item["id"] + "=id&";
+            })
+            param = param.substring(0, param.length - 1);
+            $.post('{{ url_for('question_bp.delete_question') }}', param, function (data) {
+                if (!jQuery.isEmptyObject(data)) {
+                    alert(data);
+                    $('#btTable').bootstrapTable('refresh');
+                }
+            })
+        }
+
+        function updateQuestion() {
+            if ($("#questionNameDetailVerification").attr("class") != "invalid-feedback" && $("#questionDescriptionDetailVerification").attr("class") != "invalid-feedback"
+                && $("#questionFeedbackVerification").attr("class") != "invalid-feedback") {
+                let param = "";
+                param += 'module_code=' + $("#moduleDetail").val();
+                param += '&name=' + $("#questionNameDetail").val();
+                param += '&type=' + $("#typeDetail").get(0).selectedIndex;
+                param += '&description=' + $("#questionDescriptionDetail").val();
+                param += '&feedback=' + $("#questionFeedback").val();
+                let optionStr = "";
+                let answer = "";
+                if ($("#typeDetail").get(0).selectedIndex == 0 && $("#optionInputVerification").attr("class") != "invalid-feedback") {
+                    let options = $("#optionGroup")[0].children
+                    for (let i = 0; i < options.length; i++) {
+                        optionStr += '{' + options[i].children[0].id + ':' + options[i].children[0].value + '}';
+                    }
+                    if ($("input[name='optionDetail']:checked")[0] != undefined) {
+                        answer = $("input[name='optionDetail']:checked")[0].value;
+                    } else {
+                        alert("Invalid option");
+                        return;
+                    }
+                } else if ($("#questionAnswerDetailVerification").attr("class") != "invalid-feedback") {
+                    answer = $("#questionAnswerDetail").val();
+                }
+                param += '&option=' + optionStr;
+                param += '&answer=' + answer;
+
+                let postUrl = '{{ url_for('question_bp.update_question', id='questionId') }}'.replace("questionId", $("#hiddenId").text());
+
+                $.post(postUrl, param, function (data) {
+                    if (!jQuery.isEmptyObject(data)) {
+                        alert(data);
+                        $('#btTable').bootstrapTable('refresh');
+                    }
+                })
+            } else {
+                alert("Invalid question");
+            }
+        }
+    </script>
+{% endblock %}

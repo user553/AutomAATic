@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <!-- Checking if assessment summative/formtive -->
+    <h3>Results for:<br> {{ assessment.title }}</h3>
+    <h4>Mark: {{ mark }}/{{ outof }}</h4>
+
+    {% set good = outof / 2 %}
+    {% set improvement = outof / 3 %}
+    {% set bad = outof / 4 %}
+    {% if mark <= bad %}
+        <p>You have some serious work to do to improve on this.
+            It is imperative that you make use of the feedback provided for each
+            question and fully engage in all lecture content!</p>
+        <p>I would also suggest that you make full use of the drop in sessions available between 1am and 2pm every week day.
+            These sessions will be able to help you if you are struggling. Please contact the module leader
+            if you feel you require more support from the university.</p>
+    {% elif bad < mark <= improvement %}
+        <p>This is ok, but you have several of improvements to make in order to pass.
+            Ensure that you use the feedback provided for each question and engage in all lecture content.</p>
+        <p>If you need additonal help, please make use of the drop
+            in sessions available between 11am and 2pm every week day.</p>
+
+    {% elif improvement < mark <= good %}
+        <p>Well done, you've passed! To improve your future marks
+            please make use of all the feedback provided for each question.</p>
+        <p>You might also find the drop in sessions available between 11am and 2pm every week day
+            useful if you need support in any specific areas of the module.</p>
+
+
+    {% elif good < mark < outof %}
+        <p>This is a great mark, well done! You have a couple of areas to improve on
+            but im sure you can manage that if you make effective use of the feedback i've
+            provided.</p>
+        <p>If there are any specific areas you are struggling with, I would suggest
+            you make use of the drop in session available between 11am and 2pm every week day.
+            The tutors in these sessions will be more than happy to help!</p>
+
+    {% elif mark == outof %}
+        <p>This is an amazing mark, well done! I have no suggestions for improvement based on the
+            subjects covered in these questions.</p>
+        <p>At this point, I would suggest you do some extended reading
+            around the module content, and do your best to challenge your learning
+            beyond your current level!</p>
+    {% endif %}
+
+    <hr>
+    {% for question in questions %}
+        {% if collection_instance.check_collection(current_user.id, question.id) %}
+            <button class="btn btn-success" onclick="manageCollection(this, {{ question.id }})">
+                Collected
+            </button>
+        {% else %}
+            <button class="btn btn-primary" onclick="manageCollection(this, {{ question.id }})">
+                Collect
+            </button>
+        {% endif %}
+        {% if question.type == 0 %} <!-- multichoice questions -->
+            <h4>{{ question.name }}</h4>
+            {{ question.description }}
+            <br>
+            <br>{% for key, value in question_options.items() %}
+
+            {% if key == question.id %}
+                <h6>Options:</h6>
+                <ul>
+                    {% for val in value %}
+
+                        {% if val == question.answer %}
+                            <li>{{ val }} <--- Correct Answer</li>
+                        {% else %}
+                            <li>{{ val }}</li>
+                        {% endif %}
+                    {% endfor %}
+                </ul>
+
+            {% endif %}
+        {% endfor %}
+            {% for key, value in results.items() %}
+                {% set key = key|int %}
+                {% if key == question.id %}
+                    <h5>Your answer: &nbsp; {{ value }}</h5>
+                    {% if value == question.answer %}
+                        <p>Your answer was Correct</p>
+                    {% else %}
+                        <p>Your answer was Incorrect</p>
+                        <h4>Please make use of this feedback:</h4>
+                        {{ question.feedback }}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+
+        {% elif question.type == 1 %} <!-- text input question -->
+            <h4>{{ question.name }}</h4>
+            {{ question.description }}
+            <br>
+            <br>
+            <h5>Correct Answer: {{ question.answer }} </h5>
+            {% for key, value in results.items() %}
+                {% set key = key|int %}
+                {% if key == question.id %}
+                    <h5>Your answer: &nbsp; {{ value }}</h5>
+                    {% if value == question.answer %}
+                        <p>Your answer was Correct</p>
+                    {% else %}
+                        <p>Your answer was Incorrect</p>
+                        <h4>Please make use of this feedback:</h4>
+                        {{ question.feedback }}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <hr>
+    {% endfor %}
+{% endblock %}
+{% block scripts %}
+    <script>
+        function manageCollection(e, questionId) {
+            if ($.trim($(e).text()) == 'Collect') {
+                addCollection(questionId);
+                $(e).attr('class', "btn btn-success")
+                $(e).text('Collected');
+            } else {
+                cancelCollection(questionId);
+                $(e).attr('class', "btn btn-primary")
+                $(e).text('Collect');
+            }
+        }
+
+        function cancelCollection(questionId) {
+            $.ajax({
+                url: '/collection/' + questionId,
+                type: 'delete',
+                success: function (data) {
+                    alert(data);
+                }
+            });
+        }
+
+        function addCollection(questionId) {
+            let param = "question_id=" + questionId;
+            $.post('/collection/', param, function (data) {
+                alert(data);
+            })
+        }
+    </script>
+{% endblock %}

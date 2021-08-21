@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Completed Questions</h1>
+    <ul>
+        {% for question in questions %}
+            {% set module = question.get_module() %}
+            <li>
+                {{ question.name }} from {{ module.code }} {{ module.name }} -
+                {% if current_user.has_reviewed_question(question.id) %}
+                    You have reviewed this question
+                {% else %}
+                    <a href="{{ url_for('satisfaction_review_bp.question_review', question_id=question.id) }}">
+                        Review
+                    </a>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

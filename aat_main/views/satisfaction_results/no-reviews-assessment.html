@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>There are currently no reviews for {{ assessment.title }}</h1>
+    <a href="{{ url_for('assessment_bp.assessments') }}">Return to assessments</a>
+{% endblock %}

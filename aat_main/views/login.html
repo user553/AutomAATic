@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col">
+            </div>
+            <div class="col">
+                <h1>Log in</h1>
+                <form action="" method="post">
+                    {{ form.csrf_token() }}
+
+                    <div class="form-group row">
+                        {{ form.email(id="loginEmail", class="form-control", placeholder="Your email") }}
+                        <h4 id="loginEmailVerification"></h4>
+                    </div>
+
+                    <div class="form-group row">
+                        {{ form.password(id="loginPassword", class="form-control col-sm-12 col-md-6 col-lg-6", placeholder="Your password") }}
+                        <a class="btn btn-primary col-sm-12 col-md-6 col-lg-6" onclick="sendForgetPasswordEmail(this)"
+                           id="loginPasswordBtn"><i class="fa fa-key" aria-hidden="true"></i> Forget Password
+                        </a>
+                        <h4 id="loginPasswordVerification"></h4>
+                    </div>
+                    <div class="form-group row">
+                        {{ form.login_captcha(class="form-control col-sm-12 col-md-6 col-lg-6", placeholder="Image captcha") }}
+                        <img class="col-sm-12 col-md-6 col-lg-6" id="loginCaptcha" style="cursor:pointer; height: 40px;" onclick="refreshImageCaptcha()">
+                    </div>
+                    {{ form.submit(class="btn btn-primary", style="float:right;") }}
+                </form>
+            </div>
+            <div class="col">
+            </div>
+        </div>
+        {% include '_flash-messages.html' %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="/js/custom_js/login.js"></script>
+{% endblock %}

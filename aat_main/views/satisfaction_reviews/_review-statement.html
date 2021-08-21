@@ -1,0 +1,10 @@
+<div class="review-statement-box">
+    <p>{{ statement.label }}</p>
+    {% for option in statement %}
+        {{ option }}
+        {{ option.label }}
+    {% endfor %}
+    {% for error in statement.errors %}
+        <span class="radio-group-error">{{ error }}</span>
+    {% endfor %}
+</div>

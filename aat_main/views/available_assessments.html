@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1>
+        Available Assessments
+    </h1>
+
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Description</th>
+            <th scope="col">Module</th>
+            <th scope="col">Due Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for assessment in assessments %}
+            <tr>
+                <th scope="row"><a href="{{ url_for('assessment_bp.start_assessment', assessment_id = assessment.id) }}">{{ assessment.title }}</a></th>
+                <td>{{ assessment.description }}</td>
+                <td>{{ assessment.module }}</td>
+                <td>{{ assessment.due_date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

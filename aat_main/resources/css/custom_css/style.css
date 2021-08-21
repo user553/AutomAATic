@@ -1,0 +1,292 @@
+body {
+    font-family: 'Raleway', sans-serif;
+    /*background-color: whitesmoke;*/
+}
+
+main {
+    margin: 1vh 1vw;
+}
+
+/* reference for making footer stick to bottom of screen, 6 May https://www.w3schools.com/howto/howto_css_fixed_footer.asp*/
+footer {
+    background-color: #343a40;
+    color: rgba(255, 255, 255, .5);
+    margin: 5vh 0 0 0;
+    padding: 0.5vh 1vw;
+    /*border-radius: 50px;*/
+    text-align: left;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+@media print {
+    footer {
+        display: none;
+    }
+}
+
+
+/*footer div */
+/*@media print {*/
+/*    footer     */
+/*}*/
+
+.footer-link-text {
+    color: cornflowerblue;
+    font-style: italic;
+}
+
+/* Styles for review pages*/
+.review-results-statement-title {
+    text-align: center;
+}
+
+.review-results-page-title {
+    text-align: center;
+}
+
+
+.review-statement-box {
+    margin-bottom: 5vh;
+    background-color: lightgray;
+    padding: 1vh 1vw;
+    border-radius: 5px;
+    width: 60vw;
+    position: relative;
+}
+
+.review-comment {
+    margin: 1vh 0;
+    box-shadow: 1px 1px 5px black;
+}
+
+.review-complete-statement {
+    font-style: italic;
+}
+
+.review-comment-input {
+    width: 60vw;
+    height: 10vh;
+    min-height: 10vh;
+    max-height: 10vh;
+}
+
+/*.pie-chart-container {*/
+/*    width: 50vw;*/
+/*    height: 70vh;*/
+/*    margin: auto;*/
+/*}*/
+.pie-chart-container {
+    width: 80vw;
+    height: 40vh;
+    margin: auto;
+}
+
+
+.combo-chart-container {
+    width: 80vw;
+    height: 40vh;
+    margin: 0 auto;
+    padding: 0;
+}
+
+@media screen {
+    .pie-chart-container {
+        width: 70vw;
+        height: 100vh;
+    }
+
+    .combo-chart-container {
+        width: 75vw;
+        height: 60vh;
+        margin: auto;
+    }
+}
+
+.radio-group-error {
+    font-weight: bold;
+    color: #C70039;
+    position: absolute;
+    z-index: 1;
+    left: 102%;
+    bottom: 40%;
+    /* reference 3 May https://stackoverflow.com/questions/51309415/how-to-force-span-width-to-length-of-inner-text*/
+    white-space: nowrap;
+}
+
+
+.container-with-shadow {
+    box-shadow: 5px 5px 10px black;
+    border-radius: 5px;
+    display: block;
+    margin: 10vh 1vw;
+    padding-top: 1vh;
+    background-color: white;
+}
+
+@media print {
+    .container-with-shadow {
+        margin: 2cm 5cm;
+    }
+}
+
+.result-home-page-option {
+    margin: 2vh 2vw;
+    text-align: center;
+    padding: 1vh 1vw;
+}
+
+.comments-box {
+    margin-bottom: 5vh;
+}
+
+/* Summative form CSS elements */
+#summative_form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    /*width: 90vw;*/
+    margin: auto;
+}
+
+#datetime {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 50vw;
+}
+
+
+/* Formative CSS elements */
+.table {
+    table-layout: fixed;
+}
+
+.table tbody tr td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /*white-space: nowrap;*/
+}
+
+.sticky {
+    position: fixed;
+    top: 0;
+    left: 0vw;
+    width: 100%;
+    background-color: cornsilk;
+}
+
+/* .sticky + main {
+  padding-top: 11vh;
+} */
+/*------------------------------------------------------------------
+    Banner
+-------------------------------------------------------------------*/
+
+.main-banner {
+    height: 100%;
+    position: relative;
+    background: url(../../images/thumbs/main_banner.png);
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    display: table;
+    width: 100%;
+    text-align: end;
+}
+
+.main-banner::after {
+    content: " ";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #000;
+    z-index: 0;
+    opacity: .5;
+}
+
+.heading {
+    color: #ffffff;
+    display: table-cell;
+    vertical-align: middle;
+    position: relative;
+    z-index: 1;
+}
+
+.heading h1 {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 50px;
+    margin: 20px;
+}
+
+.heading p {
+    font-size: 18px;
+    margin: 20px;
+}
+
+.heading h3 {
+    color: #ffffff;
+}
+
+.cd-words-wrapper {
+    display: inline-block;
+    position: relative;
+    text-align: left;
+}
+
+.cd-words-wrapper b {
+    display: inline-block;
+    position: absolute;
+    white-space: nowrap;
+    left: 0;
+    top: 0;
+}
+
+.cd-words-wrapper b.is-visible {
+    position: relative;
+}
+
+.cd-headline.clip span {
+    display: inline-block;
+    padding: .2em 0;
+    color: #ffffff;
+    font-size: 30px;
+}
+
+.cd-headline.clip span b {
+    text-transform: uppercase;
+}
+
+.cd-headline.clip .cd-words-wrapper {
+    overflow: hidden;
+    vertical-align: top;
+}
+
+.cd-headline.clip .cd-words-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 2px;
+    height: 100%;
+    background-color: #aebcb9;
+}
+
+.cd-headline.clip b {
+    opacity: 0;
+}
+
+.cd-headline.clip b.is-visible {
+    opacity: 1;
+}
+
+
+/*Misc*/
+.colored-box {
+    background-color: whitesmoke;
+}

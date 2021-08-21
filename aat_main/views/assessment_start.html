@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>Assessment: <h4>{{ assessment.title }}</h4></h2>
+
+    <p>Pleae note that you are about to start your assessment.</p>
+    {% if assessment.type == 1 %}
+        <p>This is a <b>summative</b> assessment.</p>
+    {% elif assessment.type == 0 %}
+        <p>This is a <b>formative</b> assessment.</p>
+    {% endif %}
+    <p>There are <b>{{ question_num }}</b> questions in this assessment.</p>
+    <p>You may attempt this <b>
+        {% if assessment.attempt == -1 %}
+            unlimited
+        {% else %}
+            {{ assessment.attempt }}
+        {% endif %}
+    </b> times.</p>
+    <p>You will have <b>{{ assessment.timelimit }}</b> minutes.</p>
+
+    <p>On clicking the start button you will be starting your attempt.</p>
+    <p>Only click start if you are ready and willing to take the assessment now.</p>
+    <p>Would you like to start the assessment?</p>
+    <a class="btn btn-primary" href="{{ url_for('assessment_bp.answer_questions', assessment_id = assessment.id) }}">Start</a>
+
+    {% for question in assessment_questions %}
+        {{ question }}
+    {% endfor %}
+
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+{% endblock %}

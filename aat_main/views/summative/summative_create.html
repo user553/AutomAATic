@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+{% block content %}
+    <body onunload="onPageUnload();">
+    <h2>
+        New Assessment
+    </h2>
+    <form action="" method="post" , id=summative_form>
+        {{ form.csrf_token() }}
+
+
+        {{ form.title(class="form-control", maxlength="64", placeholder="Please Enter a Title", id="title_form") }}
+        <div><span id="titleLengthLabel">0</span>/64</div>
+        {% for error in form.title.errors %}
+            <span style="color: red;">[ {{ error }} ]</span><br>
+        {% endfor %}
+        <!-- Module selection -->
+        {{ form.module(class="custom-select", onclick="disableQuestions(); enableQuestions(this.value)", id="module_form") }}
+        {% for error in form.module.errors %}
+            <span style="color: red;">[ {{ error }} ]</span><br>
+        {% endfor %}
+
+        <!-- Question check boxes -->
+
+        <!-- FINISH THIS LATER. FORM NEEDS TO UPDATE WITH MODULE SELECTION. DISCUSS WITH PHEONIX -->
+        <div id="question_table_div" value="Please Enter a Title">
+            <table id="question_table_form" class="table table-bordered table-hover">
+                <thead>
+                <tr>
+                    <th scope="col">Module</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Options</th>
+                    <th scope="col">Answer</th>
+                    <th scope="col">Add Question?</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                {% for question in questions %}
+                    <tr class="question_options" name="{{ question.module_code }}">
+                        <th scope="row">{{ question.module_code }}</th>
+                        <td>{{ question.name }}</td>
+                        <td>{{ question.description }}</td>
+                        <td>{{ question.option }}</td>
+                        <td>{{ question.answer }}</td>
+                        <td>
+                            <input class="{{ question.module_code }}" id="{{ question.id }}" type="checkbox" name="{{ question.id }}" value="{{ question.id }}">
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+
+
+        <div id="datetime">
+            <!-- Date/time selections -->
+            <div id="date_form">
+                {{ form.start_date.label }} {{ form.start_date(class="input-group date") }}
+            </div>
+            <div id="time_form">
+                {{ form.start_time.label }} {{ form.start_time(class="form-control timepicker") }}
+            </div>
+            <br>
+            <div id="date_form">
+                {{ form.end_date.label }} {{ form.end_date(class="input-group date") }}
+            </div>
+            <div id="time_form">
+                {{ form.end_time.label }} {{ form.end_time(class="form-control timepicker") }}
+            </div>
+
+        </div>
+        <br>
+
+        <div class="input-group">
+            <span class="input-group-text" id="basic-addon3">Minutes</span>
+            {{ form.timelimit(class="form-control", min=0, max=300, type="number", placeholder="0-300") }}
+        </div>
+        <br>{{ form.description(class="form-control", maxlength="512", placeholder="Please Enter a Description", id="description_form") }}<br>
+        <div><span id="descLengthLabel">0</span>/512</div>
+        {{ form.submit(class="btn btn-secondary") }}
+    </form>
+    </body>
+
+
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script>
+        // https://medium.com/@crawftv/javascript-jinja-flask-b0ebfdb406b3
+        function disableQuestions(question_id) {
+            question_ids = JSON.parse({{ question_id | tojson }})
+            for (i = 0; i < question_ids.length; i++) {
+                x = document.getElementById(question_ids[i])
+                x.setAttribute("disabled", "true")
+                console.log(x)
+                c = document.getElementsByClassName("question_options")
+                console.log(c)
+                for (j = 0; j < c.length; j++) {
+                    c[j].style.color = "red"
+                }
+
+            }
+        };
+
+        function enableQuestions(module) {
+            x = document.getElementsByClassName(module);
+            c = document.getElementsByName(module)
+            for (i = 0; i < x.length; i++) {
+                x[i].removeAttribute("disabled")
+                console.log(x[i])
+            }
+            for (j = 0; j < c.length; j++) {
+                c[j].style.color = "green"
+                console.log(c[j])
+            }
+        }
+
+        const maxTitleLength = 64;
+        const minTitleLength = 5;
+        const maxDescLength = 512
+        const titleLengthLabel = document.getElementById("titleLengthLabel");
+        const descLengthLabel = document.getElementById("descLengthLabel")
+        const submitButton = document.getElementById("submit")
+
+        document.getElementById("title_form").addEventListener('input', function () {
+            titleLength = this.value.length;
+            titleLengthLabel.innerHTML = titleLength;
+
+            if (titleLength > maxTitleLength) {
+                this.setCustomValidity('Title to long')
+            } else if (titleLength < minTitleLength) {
+                this.setCustomValidity('Title to short')
+            } else {
+                this.setCustomValidity('')
+            }
+
+            submitButton.disabled = !this.checkValidity();
+        })
+
+        document.getElementById("description_form").addEventListener('input', function () {
+            descLength = this.value.length;
+            descLengthLabel.innerHTML = descLength;
+
+            if (titleLength > maxDescLength) {
+                this.setCustomValidity("Description to long")
+            } else {
+                this.setCustomValidity('')
+            }
+
+            submitButton.disabled = !this.checkValidity();
+        })
+
+        document.addEventListener("submit", function () {
+            alert("Assessment created!")
+        })
+    </script>
+
+
+
+{% endblock %}

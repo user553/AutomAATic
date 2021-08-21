@@ -1,0 +1,46 @@
+<script type="text/javascript">
+    google.charts.load('current', {'packages': ['corechart']});
+    google.charts.setOnLoadCallback(drawVisualization);
+
+    function drawVisualization() {
+        let data = []
+        let titleRow = ['Statement']
+        {% for response in responses.values() %}
+            titleRow.push('{{ response }}')
+        {% endfor %}
+        data.push(titleRow)
+
+
+        let newRow
+        {% set statements_shortened = {
+            'I find it easy to navigate the AAT to find my tasks that need to be completed.' : 'Easy to navigate',
+            'I am pleased overall with the functionality of the AAT.': 'Pleased overall',
+            'I feel that I had sufficient knowledge to complete this assessment.': 'Sufficient knowledge',
+            'I found this assessment difficult.': 'Difficult assessment',
+            'I found this question difficult to answer.': 'Difficult question',
+            'I feel this question is relevant to the topic being assessed.': 'Relevant to topic'
+        } %}
+        {% for statement in results %}
+            newRow = []
+            {# reference 30 march. https://stackoverflow.com/questions/30637054/case-statement-for-setting-var-in-ansible-jinja2#}
+            newRow.push('{{ statements_shortened[statement['statement']] | default('statement' ~ loop.index) }}')
+            {% for count in statement['responses'].values() %}
+                newRow.push({{ count }})
+            {% endfor %}
+            data.push(newRow)
+        {% endfor %}
+
+        data = google.visualization.arrayToDataTable(data)
+
+        const options = {
+            title: 'Number of responses to each satisfaction statement',
+            vAxis: {title: 'Number of responses'},
+            hAxis: {title: 'Statement'},
+            seriesType: 'bars',
+            series: {5: {type: 'line'}}
+        };
+
+        const chart = new google.visualization.ComboChart(document.getElementById('combo-chart'));
+        chart.draw(data, options);
+    }
+</script>

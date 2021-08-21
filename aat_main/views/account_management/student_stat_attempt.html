@@ -1,0 +1,34 @@
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <p class="display-4">Attempt Of {{ course }}</p>
+        </div>
+        <div class="col-2">
+            <a href="{{ url_for('account_bp.account_page') }}" class="btn btn-primary" style="float: right; margin: 0 auto;">Back</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-warning" onclick="resetData()">Reset</button>
+            <button class="btn btn-success" onclick="searchData()">Search</button>
+        </div>
+        <div class="col">
+            <select id="typeDropdown" class="form-control">
+                <option value="2">All</option>
+                <option value="0">Formative</option>
+                <option value="1">Summative</option>
+            </select>
+        </div>
+        <div class="col">
+            <input type="text" class="form-control" placeholder="Start Date" id="startDate">
+        </div>
+        <div class="col">
+            <input type="text" class="form-control" placeholder="End Date" id="endDate">
+        </div>
+    </div>
+    <div class="row">
+        <div id="attemptBarChart" style="width: 100%; height: 400px;"></div>
+    </div>
+</div>
+
+

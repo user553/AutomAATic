@@ -1,0 +1,39 @@
+<div class="container">
+    <div class="row">
+        <div class="col-10">
+            <p class="display-4">Attainment Of {{ course }}</p>
+        </div>
+        <div class="col-2">
+            <a href="{{ url_for('account_bp.account_page') }}" class="btn btn-primary" style="float: right; margin: 0 auto;">Back</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg-12">
+            <p class="lead font-italic">knowledge level</p>
+            <p class="display-4 font-italic" id="knowledgeLevel">70</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg">
+            <p class="lead">Formative average score</p>
+            <h3 id="formativeScore">0</h3>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg">
+            <p class="lead">Multiple choice accuracy</p>
+            <h3 id="formativeAccuracy">0</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12 col-md-12 col-lg">
+            <p class="lead">Summative average score</p>
+            <h3 id="summativeScore">0</h3>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg">
+            <p class="lead">Fill in blank accuracy</p>
+            <h3 id="summativeAccuracy">0</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div id="attainmentRadarChart" style="width: 100%; height: 400px;"></div>
+    </div>
+</div>

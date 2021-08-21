@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Questions: {{ question_id }}</h1>
+    <div id="assessment_duration_counter">Remaining Time: <span id="timeLeftLabel" style="color:red">{{ time }}:00</span> minutes &nbsp; <span id="timeLeftAlert"
+                                                                                                                                               style="color:red"></span></div>
+
+    <form id="assessment_form" method="POST" onsubmit="setFormSubmitting()">
+        <!-- {{ form.csrf_token() }} -->
+
+        <hr>
+        {% for question in questions %}
+            {% if question.type == 0 %} <!-- Multichoice -->
+                <h5>{{ question.name }}</h5><br>
+                <h6>Question:</h6>
+                <p>{{ question.description }}</p>
+                <h6>Options:</h6>
+                {% for key, value in question_options.items() %}
+                    {% if key == question.id %}
+                        {% for option in value %}
+                            <input type="radio" id="{{ option }}" name="{{ question.id }}" value="{{ option }}">
+                            <label for="{{ option }}">{{ option }}</label><br>
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                <hr>
+            {% elif question.type == 1 %} <!-- Text input -->
+                <h5>{{ question.name }}</h5><br>
+                <h6>Question:</h6>
+                <p>{{ question.description }}</p>
+                <h6>Provide Answer:</h6>
+                <input type="text" id="{{ question.id }}" name="{{ question.id }}" value="">
+
+
+                <hr>
+            {% endif %}
+        {% endfor %}
+        <button type="submit" value="{{ assessment.id }}" onclick="return confirm('Are you sure want to submit. Please check you have answered all the questions.')">Submit</button>
+
+        <input type="number" id="time_value" value="{{ time }}" hidden></div>
+
+
+    </form>
+
+    <script>
+        // timer for assesment
+        let time = document.getElementById("time_value").value
+        let testDuration = time * 60000;
+
+        const timeLeftLabel = document.getElementById("timeLeftLabel")
+        const timeLeftAlert = document.getElementById("timeLeftAlert")
+        seconds = 60;
+        count = 0;
+
+        const interval = setInterval(function () {
+            testDuration = testDuration - 5000;
+
+            timeLeft = parseInt(testDuration / 60000)
+
+            if (testDuration <= 60000) {
+                count++;
+                seconds = seconds - 5;
+                timeLeftOut = "00" + ":" + seconds;
+
+                timeLeftLabel.innerHTML = timeLeftOut;
+            } else {
+                count++;
+                seconds = seconds - 5;
+                timeLeftOut = (timeLeft) + ":" + seconds;
+                timeLeftLabel.innerHTML = timeLeftOut;
+                if (count == 12) {
+                    seconds = 60;
+                    count = 0;
+                }
+            }
+
+            if (testDuration == 3600000) {
+                timeLeftAlert.innerHTML = ("you have 1 hour remaining")
+            } else if (testDuration == 1800000) {
+                timeLeftAlert.innerHTML = ("You have 30 minutes remaining")
+            } else if (testDuration == 900000) {
+                timeLeftAlert.innerHTML = ("You have 15 minutes remaining")
+            } else if (testDuration == 300000) {
+                timeLeftAlert.innerHTML = ("you have 5 minutes remaining")
+            } else if (testDuration == 60000) {
+                timeLeftAlert.innerHTML = ("you have 1 minute remaining")
+            } else if (testDuration == 30000) {
+                timeLeftAlert.innerHTML = ("you have 30 seconds remaining")
+            } else if (testDuration <= 0) {
+                document.getElementById("assessment_form").submit()
+            } else {
+                timeLeftAlert.innerHTML = ("")
+            }
+        }, 5000)
+
+        // Sticky time
+        window.onscroll = function () {
+            scrollFunction()
+        };
+
+        // Finds header element using id "sticky_header"
+        var time_counter = document.getElementById("assessment_duration_counter");
+        // Gets offset value (offset value is in relation to top of offset parent element.)
+        var sticky = time_counter.offsetTop;
+
+        // Adds sticky class to header element when user scrolls (top set to 0px)
+        // Sticky class is removed when user scrolls right back to the top (0px)
+        function scrollFunction() {
+            if (window.pageYOffset > sticky) {
+                time_counter.classList.add("sticky")
+            } else {
+                time_counter.classList.remove("sticky");
+            }
+        }
+
+        // var formSubmitting = false;
+        // var setFormSubmitting = function () { formSubmitting = true; };
+        // window.onload = function() {
+        //     window.addEventListener("beforeunload", function(unloadAssessment) {
+        //         if (formSubmitting) {
+        //             return undefined;
+        //         }
+        //         var unloadMessage = 'Are you sure you want to leave the assessment.' + 'Un-submitted answers will be lost, and you may not be able to attempt this assessment again.'
+
+        //         return unloadMessage;
+        //     })
+        // }
+    </script>
+
+{% endblock %}

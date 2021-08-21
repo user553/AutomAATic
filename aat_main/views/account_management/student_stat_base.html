@@ -1,0 +1,36 @@
+<div class="nav nav-pills nav-fill" id="pills-stat" role="tablist">
+    {% for course in courses %}
+        <a class="nav-link" id="pills-{{ course }}-tab" data-toggle="pill" href="#pills-{{ course }}" role="tab" aria-controls="pills-{{ course }}"
+           aria-selected="true">{{ course }}</a>
+    {% endfor %}
+</div>
+<div class="tab-content" id="pills-tabContent">
+    {% for course in courses %}
+        <div class="tab-pane fade" id="pills-{{ course }}" role="tabpanel" aria-labelledby="pills-{{ course }}-tab">
+            <p class="display-4">Stat Of {{ course }}</p>
+            <div class="card-deck" id="card-group">
+                <div class="card">
+                    <a href="{{ url_for('account_bp.stat_attempt', course=course) }}"><img src="/images/thumbs/account_attempt.jpg" class="card-img-top" style="height: 150px"
+                                                                                           alt="account_attempt.jpg"></a>
+                    <div class="card-body">
+                        <a href="{{ url_for('account_bp.stat_attempt', course=course) }}"><h5 class="card-title">Attempt</h5></a>
+                    </div>
+                </div>
+                <div class="card">
+                    <a href="{{ url_for('account_bp.stat_attainment', course=course) }}"><img src="/images/thumbs/account_attainment.jpg" class="card-img-top" style="height: 150px"
+                                                                                              alt="account_attainment.jpg"></a>
+                    <div class="card-body">
+                        <a href="{{ url_for('account_bp.stat_attainment', course=course) }}"><h5 class="card-title">Attainment</h5></a>
+                    </div>
+                </div>
+                <div class="card">
+                    <a href="{{ url_for('account_bp.stat_engagement', course=course) }}"><img src="/images/thumbs/account_engagement.jpg" class="card-img-top" style="height: 150px"
+                                                                                              alt="account_engagement.jpg"></a>
+                    <div class="card-body">
+                        <a href="{{ url_for('account_bp.stat_engagement', course=course) }}"><h5 class="card-title">Engagement</h5></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>

@@ -1,0 +1,17 @@
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+{% for statement in results %}
+    <div class="container-with-shadow">
+        <h3 class="review-results-statement-title">{{ statement['statement'] }}</h3>
+        {#        reference https://stackoverflow.com/questions/12145434/how-to-output-loop-counter-in-python-jinja-template
+                   22 March #}
+        {% set chart_container = 'donutchart' ~ loop.index %}
+        {% set chart_title = 'Responses' %}
+        {% set response_counts_dict = statement['responses'] %}
+        <div id="{{ chart_container }}" class="pie-chart-container"></div>
+        <hr>
+
+        {# reference. 22 march. https://stackoverflow.com/questions/2061439/string-concatenation-in-jinja/55192200#55192200#}
+        {% include '_pie-chart.html' %}
+    </div>
+{% endfor %}

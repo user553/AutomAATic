@@ -1,0 +1,570 @@
+{% extends 'base.html' %}
+{% block heads %}
+    {% if current_account.role == 'student' %}
+        {% if student_stat_status == 0 %}
+
+        {% elif student_stat_status == 1 %}
+
+        {% elif student_stat_status == 2 %}
+
+        {% elif student_stat_status == 3 %}
+            <link rel="stylesheet" href="/css/import_css/bootstrap-table.min.css">
+        {% endif %}
+    {% else %}
+
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-sm-3 col-12">
+            <div class="card">
+                <img src="/images/{{ current_account.avatar }}"
+                     class="card-img-top mx-auto" id="cardAvatar">
+                <div class="card-body">
+                    <h4 class="card-title"><i class="fa fa-user" aria-hidden="true"></i> {{ current_account.name }}</h4>
+                    <p class="card-text"><i class="fa fa-envelope" aria-hidden="true"></i> {{ current_account.email }}</p>
+                    <hr>
+                    <p class="card-text"><i class="fa fa-file-text" aria-hidden="true"></i> {{ current_account.profile }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-9 col-12">
+            <nav>
+                <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                    <a class="nav-item nav-link active" id="nav-activity-tab" data-toggle="tab" href="#nav-stat" role="tab"
+                       aria-controls="nav-stat" aria-selected="false">Stat</a>
+                    <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab"
+                       aria-controls="nav-profile" aria-selected="false">Profile</a>
+                </div>
+            </nav>
+            <div class="tab-content" id="nav-tabContent">
+                <div class="tab-pane fade show active" id="nav-stat" role="tabpanel" aria-labelledby="nav-stat-tab">
+                    {% if current_account.role == 'student' %}
+                        {% if student_stat_status == 0 %}
+                            {% include 'student_stat_base.html' %}
+                        {% elif student_stat_status == 1 %}
+                            {% include 'student_stat_attempt.html' %}
+                        {% elif student_stat_status == 2 %}
+                            {% include 'student_stat_attainment.html' %}
+                        {% elif student_stat_status == 3 %}
+                            {% include 'student_stat_engagement.html' %}
+                        {% endif %}
+                    {% else %}
+                        {#                            {% if staff_stat_status == 0 %}#}
+                        {#                                {% include 'staff_stat_base.html' %}#}
+                        {#                            {% elif staff_stat_status == 1 %}#}
+                        {#                                {% include 'staff_stat_attempt.html' %}#}
+                        {#                            {% elif staff_stat_status == 2 %}#}
+                        {#                                {% include 'staff_stat_attainment.html' %}#}
+                        {#                            {% elif staff_stat_status == 3 %}#}
+                        {#                                {% include 'staff_stat_engagement.html' %}#}
+                    {% endif %}
+                </div>
+                <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+                    <div>
+                        <form method="post" enctype="multipart/form-data">
+                            <img src="/images/{{ current_account.avatar }}" id="avatar" class="mx-auto d-block img-thumbnail"
+                                 style="height: 250px; width: 250px; margin-bottom: 20px;">
+                            <div class="form-group row" style="width: 250px; margin: 20px auto; padding-bottom: 20px;">
+                                <div class="custom-file">
+                                    <input onchange="fileChange(this)" type="file"
+                                           id="inputGroupFile"
+                                           aria-describedby="inputGroupFileAddon">
+                                    <label class="custom-file-label" id="filenameLabel" for="inputGroupFile">Choose avatar
+                                        image</label>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputNickname" class="col-sm-2 col-form-label"><i class="fa fa-user" aria-hidden="true"></i> Name</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputNickname" value="{{ current_account.name }}" placeholder="Your name">
+                                    <h4 id="inputNicknameVerification"></h4>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="staticEmail" class="col-sm-2 col-form-label"><i class="fa fa-envelope" aria-hidden="true"></i> Email</label>
+                                <div class="col-sm-10">
+                                    <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ current_account.email }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputPassword" class="col-sm-2 col-form-label"><i class="fa fa-key" aria-hidden="true"></i> Password</label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="inputPassword" placeholder="Your password">
+                                    <h4 id="inputPasswordVerification"></h4>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="confirmPassword" class="col-sm-2 col-form-label"><i class="fa fa-key" aria-hidden="true"></i> Confirm</label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="confirmPassword" placeholder="Repeat your password">
+                                    <h4 id="confirmPasswordVerification"></h4>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="inputProfile" class="col-sm-2 col-form-label"><i class="fa fa-file-text" aria-hidden="true"></i> Profile</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="inputProfile" value="{{ current_account.profile }}">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <button type="button" class="btn btn-success" onclick="updateProfile()">Update Profile
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="/js/custom_js/account.js"></script>
+    {% if current_account.role == 'student' %}
+        <script type="text/javascript" src="/js/import_js/laydate.js"></script>
+        <script type="text/javascript" src="/js/import_js/echarts.js"></script>
+        {% if student_stat_status == 0 %}
+
+        {% elif student_stat_status == 1 %}
+            <script>
+                let attemptBarChart = echarts.init(document.getElementById("attemptBarChart"));
+
+                $(document).ready(function () {
+                    laydate.render({
+                        elem: '#startDate',
+                        lang: 'en'
+                    });
+                    laydate.render({
+                        elem: '#endDate',
+                        lang: 'en'
+                    });
+
+                    resetData();
+                })
+
+                function searchData() {
+                    let conditions = {
+                        module: '{{ course }}',
+                        type: $("#typeDropdown").val(),
+                        startDate: $("#startDate").val(),
+                        endDate: $("#endDate").val()
+                    }
+
+                    getData(conditions);
+                }
+
+                function resetData() {
+                    $("#typeDropdown").val("2");
+                    $("#startDate").val("");
+                    $("#endDate").val("");
+
+                    let conditions = {
+                        module: '{{ course }}',
+                        type: 2
+                    }
+
+                    getData(conditions);
+                }
+
+                function getData(conditions) {
+                    $.ajax({
+                        url: "{{ url_for('account_bp.stat_attempt_data') }}",
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        data: conditions,
+                        success: function (data) {
+                            //attempt bar chart
+                            let attemptBarChartDataAxis = [];
+                            let attemptBarChartData = [];
+                            data.forEach(function (d) {
+                                let formatTime = d["submit_time"].split(",")[1].split(" ");
+                                attemptBarChartDataAxis.push(formatTime[1] + "/" + formatTime[2] + "/" + formatTime[3]);
+                                attemptBarChartData.push(d["mark"]);
+                            })
+                            let attemptBarChartOption = {
+                                xAxis: {
+                                    data: attemptBarChartDataAxis,
+                                    name: "submit time",
+                                    axisLabel: {
+                                        inside: false,
+                                        textStyle: {
+                                            color: '#000'
+                                        }
+                                    },
+                                    axisTick: {
+                                        show: false
+                                    },
+                                    axisLine: {
+                                        show: false
+                                    },
+                                    z: 10
+                                },
+                                yAxis: {
+                                    name: "mark",
+                                    axisLine: {
+                                        show: false
+                                    },
+                                    axisTick: {
+                                        show: false
+                                    },
+                                    axisLabel: {
+                                        textStyle: {
+                                            color: '#999'
+                                        }
+                                    },
+                                    min: 0,
+                                    max: 10,
+                                    interval: 2
+                                },
+                                dataZoom: [
+                                    {
+                                        type: 'inside'
+                                    }
+                                ],
+                                series: [
+                                    {
+                                        type: 'bar',
+                                        showBackground: true,
+                                        itemStyle: {
+                                            color: new echarts.graphic.LinearGradient(
+                                                0, 0, 0, 1,
+                                                [
+                                                    {offset: 0, color: '#83bff6'},
+                                                    {offset: 0.5, color: '#188df0'},
+                                                    {offset: 1, color: '#188df0'}
+                                                ]
+                                            )
+                                        },
+                                        emphasis: {
+                                            itemStyle: {
+                                                color: new echarts.graphic.LinearGradient(
+                                                    0, 0, 0, 1,
+                                                    [
+                                                        {offset: 0, color: '#2378f7'},
+                                                        {offset: 0.7, color: '#2378f7'},
+                                                        {offset: 1, color: '#83bff6'}
+                                                    ]
+                                                )
+                                            }
+                                        },
+                                        data: attemptBarChartData
+                                    }
+                                ]
+                            };
+                            // Enable data zoom when user click bar.
+                            let attemptBarChartXZoomSize = 6;
+                            attemptBarChart.on('click', function (params) {
+                                attemptBarChart.dispatchAction({
+                                    type: 'dataZoom',
+                                    startValue: attemptBarChartDataAxis[Math.max(params.dataIndex - attemptBarChartXZoomSize / 2, 0)],
+                                    endValue: attemptBarChartDataAxis[Math.min(params.dataIndex + attemptBarChartXZoomSize / 2, attemptBarChartData.length - 1)]
+                                });
+                            });
+                            attemptBarChart.setOption(attemptBarChartOption);
+                        }
+                    })
+                }
+            </script>
+        {% elif student_stat_status == 2 %}
+            <script>
+                //attainment radar chart
+                let attainmentRadarChart = echarts.init(document.getElementById("attainmentRadarChart"));
+
+                $(document).ready(function () {
+                    let conditions = {
+                        module: '{{ course }}'
+                    }
+                    getData(conditions);
+                })
+
+                function getData(conditions) {
+                    $.ajax({
+                        url: "{{ url_for('account_bp.stat_attainment_data') }}",
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        data: conditions,
+                        success: function (data) {
+                            $("#knowledgeLevel").text(data[0][0] + " ~ " + data[0][1]);
+                            $("#formativeScore").text(data[1]);
+                            $("#summativeScore").text(data[2]);
+                            $("#formativeAccuracy").text(data[3] + "%");
+                            $("#summativeAccuracy").text(data[4] + "%");
+                            let attainmentRadarChartOption = {
+                                radar: [
+                                    {
+                                        indicator: [
+                                            {text: 'Formative average score', max: 10},
+                                            {text: 'Summative average score', max: 10},
+                                            {text: 'Multiple choice accuracy', max: 100},
+                                            {text: 'Fill in blank accuracy', max: 100}
+                                        ],
+                                        center: ['50%', '50%'],
+                                        radius: 120,
+                                        startAngle: 90,
+                                        splitNumber: 4,
+                                        name: {
+                                            formatter: '{value}',
+                                            textStyle: {
+                                                color: '#72ACD1'
+                                            }
+                                        },
+                                        axisLine: {
+                                            lineStyle: {
+                                                color: 'rgba(255, 255, 255, 0.5)'
+                                            }
+                                        },
+                                        splitLine: {
+                                            lineStyle: {
+                                                color: 'rgba(255, 255, 255, 0.5)'
+                                            }
+                                        }
+                                    }
+                                ],
+                                series: [
+                                    {
+                                        type: 'radar',
+                                        emphasis: {
+                                            lineStyle: {
+                                                width: 4
+                                            }
+                                        },
+                                        data: [
+                                            {
+                                                value: data.splice(1, 4),
+                                                symbol: 'rect',
+                                                symbolSize: 5,
+                                                lineStyle: {
+                                                    type: 'dashed'
+                                                },
+                                                label: {
+                                                    show: true,
+                                                    formatter: function (params) {
+                                                        return params.value;
+                                                    }
+                                                },
+                                                areaStyle: {
+                                                    opacity: 0.9,
+                                                    color: new echarts.graphic.RadialGradient(0.5, 0.5, 1, [
+                                                        {
+                                                            color: '#B8D3E4',
+                                                            offset: 0
+                                                        },
+                                                        {
+                                                            color: '#72ACD1',
+                                                            offset: 1
+                                                        }
+                                                    ])
+                                                }
+                                            }
+                                        ]
+                                    }
+                                ]
+                            }
+                            attainmentRadarChart.setOption(attainmentRadarChartOption);
+                        }
+                    })
+                }
+
+            </script>
+        {% elif student_stat_status == 3 %}
+            <script type="text/javascript" src="/js/import_js/bootstrap-table.min.js"></script>
+            <script>
+                //engagement pie chart
+                let engagementPieChart = echarts.init(document.getElementById("engagementPieChart"));
+                $(document).ready(function () {
+                    $('#creditEvent').bootstrapTable({
+                        url: "{{ url_for('account_bp.stat_credit_data',module = course) }}",  // 请求数据源的路由
+                        dataType: "json",
+                        pagination: true, //前端处理分页
+                        singleSelect: false,//是否只能单选
+                        search: true, //显示搜索框，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                        {#toolbar: '#toolbar-' + courseid, //工具按钮用哪个容器#}
+                        striped: true, //是否显示行间隔色
+                        cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                        pageNumber: 1, //初始化加载第10页，默认第一页
+                        pageSize: 10, //每页的记录行数（*）
+                        pageList: [10, 20, 50, 100], //可供选择的每页的行数（*）
+                        // strictSearch: true,//设置为 true启用 全匹配搜索，false为模糊搜索
+                        // showColumns: true, //显示内容列下拉框
+                        // showRefresh: true, //显示刷新按钮
+                        minimumCountColumns: 2, //当列数小于此值时，将隐藏内容列下拉框
+                        // clickToSelect: true, //设置true， 将在点击某行时，自动勾选rediobox 和 checkbox
+                        // height: 500, //表格高度，如果没有设置height属性，表格自动根据记录条数决定表格高度
+                        uniqueId: "id", //每一行的唯一标识，一般为主键列
+                        showToggle: true, //是否显示详细视图和列表视图的切换按钮
+                        cardView: false, //是否显示详细视图
+                        // detailView: true, //是否显示父子表，设置为 true 可以显示详细页面模式,在每行最前边显示+号#}
+                        sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
+                        columns: [
+                            {
+                                title: "selectAll",
+                                field: "select",
+                                checkbox: true,
+                                align: "center",
+                                cellStyle: function () {
+                                    $(".th-inner")[0].style.overflow = "inherit";
+                                    return {css: {"overflow": "inherit"}}
+                                }
+                            }, {
+                                field: 'id',
+                                title: 'Id'
+                            }, {
+                                field: 'event',
+                                title: 'Event',
+                                formatter: function (value, row, index) {
+                                    if (row.event.split("(")[0] == "Finish assessment") {
+                                        let reviewUrl = "{{ url_for('assessment_bp.assessment_feedback', assessment_id='AssessmentId') }}".replace('AssessmentId', row.event.split("(")[1].replace(")", ""));
+                                        return '<a href="' + reviewUrl + '">' + row.event + '</a>'
+                                    } else {
+                                        return row.event
+                                    }
+                                }
+                            }, {
+                                field: 'credit',
+                                title: 'Credit'
+                            }, {
+                                field: 'time',
+                                title: 'Time'
+                            }]
+                    });
+
+                    $('#collection').bootstrapTable({
+                        url: "{{ url_for('account_bp.stat_collection_data',module = course) }}",  // 请求数据源的路由
+                        dataType: "json",
+                        pagination: true, //前端处理分页
+                        singleSelect: false,//是否只能单选
+                        search: true, //显示搜索框，此搜索是客户端搜索，不会进服务端，所以，个人感觉意义不大
+                        {#toolbar: '#toolbar-' + courseid, //工具按钮用哪个容器#}
+                        striped: true, //是否显示行间隔色
+                        cache: false, //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                        pageNumber: 1, //初始化加载第10页，默认第一页
+                        pageSize: 10, //每页的记录行数（*）
+                        pageList: [10, 20, 50, 100], //可供选择的每页的行数（*）
+                        // strictSearch: true,//设置为 true启用 全匹配搜索，false为模糊搜索
+                        // showColumns: true, //显示内容列下拉框
+                        // showRefresh: true, //显示刷新按钮
+                        minimumCountColumns: 2, //当列数小于此值时，将隐藏内容列下拉框
+                        // clickToSelect: true, //设置true， 将在点击某行时，自动勾选rediobox 和 checkbox
+                        // height: 500, //表格高度，如果没有设置height属性，表格自动根据记录条数决定表格高度
+                        uniqueId: "id", //每一行的唯一标识，一般为主键列
+                        showToggle: true, //是否显示详细视图和列表视图的切换按钮
+                        cardView: false, //是否显示详细视图
+                        // detailView: true, //是否显示父子表，设置为 true 可以显示详细页面模式,在每行最前边显示+号#}
+                        sidePagination: "client", //分页方式：client客户端分页，server服务端分页（*）
+                        columns: [
+                            {
+                                title: "selectAll",
+                                field: "select",
+                                checkbox: true,
+                                align: "center",
+                                cellStyle: function () {
+                                    $(".th-inner")[0].style.overflow = "inherit";
+                                    return {css: {"overflow": "inherit"}}
+                                }
+                            }, {
+                                field: 'id',
+                                title: 'Id'
+                            }, {
+                                field: 'question',
+                                title: 'Question'
+                            }, {
+                                field: 'description',
+                                title: 'Description'
+                            }, {
+                                field: 'type',
+                                title: 'Type'
+                            }, {
+                                field: 'operation',
+                                title: 'Operation',
+                                formatter: function (value, row, index) {
+                                    return '<button class="btn btn-outline-primary" onclick="cancelCollection(' + row.id + ')">collected</button>'
+                                }
+                            }]
+                    });
+
+                    let conditions = {
+                        module: '{{ course }}'
+                    }
+                    getData(conditions);
+                })
+
+                function getData(conditions) {
+                    $.ajax({
+                        url: "{{ url_for('account_bp.stat_engagement_data') }}",
+                        type: "GET",
+                        contentType: "application/json; charset=utf-8",
+                        data: conditions,
+                        success: function (data) {
+                            $("#formativeCredit").text(data[0]);
+                            $("#summativeCredit").text(data[1]);
+                            let feedbackCredit = 0;
+                            if (!isNaN(parseInt(data[2]))) {
+                                feedbackCredit += parseInt(data[2]);
+                            }
+                            if (!isNaN(parseInt(data[3]))) {
+                                feedbackCredit += parseInt(data[3]);
+                            }
+                            $("#feedbackCredit").text(feedbackCredit);
+                            $("#collectionCredit").text(data[4]);
+                            $("#moduleCredit").text(data[5]);
+
+                            let engagementPieChartOption = {
+                                legend: {
+                                    top: 'top'
+                                },
+                                tooltip: {
+                                    trigger: 'item',
+                                    formatter: '{b} : {c} ({d}%)'
+                                },
+                                series: [
+                                    {
+                                        type: 'pie',
+                                        radius: [30, 150],
+                                        center: ['50%', '50%'],
+                                        roseType: 'radius',
+                                        label: {
+                                            show: false
+                                        },
+                                        emphasis: {
+                                            label: {
+                                                show: true
+                                            }
+                                        },
+                                        itemStyle: {
+                                            borderRadius: 10
+                                        },
+                                        data: [
+                                            {value: data['0'], name: 'formative'},
+                                            {value: data['1'], name: 'summative'},
+                                            {value: feedbackCredit, name: 'feedback'},
+                                            {value: data['4'], name: 'collection'}
+                                        ]
+                                    }
+                                ]
+                            };
+                            engagementPieChart.setOption(engagementPieChartOption);
+                        }
+                    })
+                }
+
+                function cancelCollection(questionId) {
+                    $.ajax({
+                        url: '/collection/' + questionId,
+                        type: 'delete',
+                        success: function (data) {
+                            alert(data);
+                            if (data.startsWith("Success")) {
+                                let dataUrl = "{{ url_for('account_bp.stat_collection_data',module=course ) }}";
+                                $("#collection").bootstrapTable('refresh', {url: dataUrl});
+                            }
+                        }
+                    });
+                }
+            </script>
+        {% endif %}
+    {% else %}
+
+    {% endif %}
+{% endblock %}

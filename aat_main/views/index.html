@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    {#    {% include '_flash-messages.html' %}#}
+    {#    <h1>#}
+    {#        Welcome to <span style="text-shadow:2px 2px 5px grey">automAATiq.</span>#}
+    {#    </h1>#}
+    {#    {% if current_user.role == 'lecturer' %}#}
+    {#        <a href="{{ url_for('satisfaction_result_bp.aat_review_results') }}" style="font-style: italic;">#}
+    {#            See what students think#}
+    {#        </a>#}
+    {#    {% endif %}#}
+    {#    #}
+    <!-- Banner -->
+    <section id="mainBanner" class="main-banner">
+        <div class="heading">
+            <h1>
+                Welcome to <span style="text-shadow:2px 2px 5px grey">automAATiq</span>
+            </h1>
+            <p>automAATiq for the School of Computer Science and Informatics, Cardiff University</p>
+
+            <div style="height: 45px"></div>
+            <h3 class="cd-headline clip is-full-width">
+                <span class="cd-words-wrapper">
+                    {% if current_user %}
+                        {% if current_user.role == "lecturer" %}
+                            <b class="is-visible">Welcome {{ current_user.role }}, {{ current_user.name }}!</b>
+                            <b>Managing assessments and questions!</b>
+                            <b>Viewing students' comments!</b>
+                        {% else %}
+                            <b class="is-visible">Welcome {{ current_user.role }}, {{ current_user.name }}!</b>
+                            <b>Learning more knowledge here!</b>
+                            <b>Leaving your valuable comments!</b>
+                        {% endif %}
+
+                    {% endif %}
+                </span>
+            </h3>
+            {% if current_user.role == 'lecturer' %}
+                <p><a href="{{ url_for('satisfaction_result_bp.aat_review_results') }}"
+                      style="font-style:italic;text-shadow:2px 2px 5px grey;color:lightgray">
+                    See what students think about automAATiq
+                </a></p>
+            {% else %}
+                <p>Designed by <span style="text-shadow:2px 2px 5px grey">TEAM-B</span></p>
+            {% endif %}
+        </div>
+    </section>
+    {% include '_flash-messages.html' %}
+
+    {#    {% if current_user.role == 'student' %}#}
+    {#        {% if current_user.has_reviewed_aat_recently() %}#}
+    {#            You must wait {{ current_user.get_days_until_next_aat_review() }} days before leaving#}
+    {#            another review#}
+    {#        {% else %}#}
+    {#            <p><a href="{{ url_for('satisfaction_review_bp.aat_review') }}">Leave a review for the#}
+    {#                AAT</a></p>#}
+    {#        {% endif %}#}
+    {#    {% elif current_user.role == 'lecturer' %}#}
+    {#        <a href="{{ url_for('satisfaction_result_bp.aat_review_results') }}">View AAT review#}
+    {#            results</a>#}
+    {#    {% endif %}#}
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="/js/custom_js/index.js"></script>
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+
+    <h2>Thank you for completing: {{ assessment.title }} </h2>
+    <h4>Results and feedback will be released on: {{ assessment.due_date }}</h4>
+
+    <p>Please check for your feedback on the completed assessment page after this date.</p>
+
+    <p>To return to the assessments page click <a href="{{ url_for('assessment_bp.assessments') }}">here</a>!</p>
+
+{% endblock %}

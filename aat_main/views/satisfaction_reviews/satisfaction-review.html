@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ page_title }}</h1>
+    {% include '_review-instruction.html' %}
+
+    <form id="review-form" action="" method="post">
+        {{ form.csrf_token() }}
+
+        {% set statements = [form.statement1, form.statement2] %}
+
+        {% for statement in statements %}
+            {% include '_review-statement.html' %}
+        {% endfor %}
+
+        {% set MAX_COMMENT_LENGTH = 512 %}
+        {% include '_review-comment.html' %}
+
+        {% include '_review-submit.html' %}
+    </form>
+    {#    {% include '_flash-messages.html' %}#}
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        const maxCommentLength = 512;
+        const boxShadowStyle = '0 0 10px red';
+        const submitButton = document.getElementById('submit');
+        const commentLengthLabel = document.getElementById('comment-length-label');
+        let commentLength;
+
+        document.getElementById('comment').addEventListener('input', function () {
+            commentLength = this.value.length;
+            console.log(commentLength);
+            commentLengthLabel.innerHTML = commentLength;
+
+            if (commentLength > maxCommentLength) {
+                this.setCustomValidity('Comment too long');
+                this.style.boxShadow = boxShadowStyle;
+            } else {
+                this.setCustomValidity('');
+                this.style.boxShadow = 'none';
+            }
+
+            // Code to check whether a certain element passes all validity checks or not.
+            // Adapted from the MDN Web Docs, last modified 19 February 2021.
+            // https://developer.mozilla.org/en-US/docs/Web/API/HTMLSelectElement/checkValidity
+            // Accessed: 3 March 2021.
+            submitButton.disabled = !this.checkValidity();  // I took the definition of the function from the docs and then used it for my own program's needs
+            // End of referenced code
+        });
+    </script>
+{% endblock %}
