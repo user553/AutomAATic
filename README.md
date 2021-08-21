@@ -1,0 +1,2 @@
+# AutomAATic
+Automated assessment tool
